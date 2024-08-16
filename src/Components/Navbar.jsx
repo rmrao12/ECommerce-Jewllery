@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import '../index.css';
 import logo from '../Images/logo.webp';
 import { FaFacebookF, FaInstagram, FaTwitter, FaShoppingCart } from 'react-icons/fa'; // Correct import
+import { Link } from 'react-router-dom';
+import { useCart } from '../Contexts/CartContext';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(2); // Example cart count
-
+  
+  const { getTotalQuantity } = useCart();
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -72,18 +75,19 @@ const Navbar = () => {
               </button>
             </div>
             <div className="hidden md:flex">
-              <a
-                href="/"
-                className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-              >
+             
+              <Link to="/" className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
                 Home
-              </a>
+              </Link>
+             
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
                   className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
                 >
-                  Shop
+                    <Link to="/shop">
+                Shop
+              </Link>
                   <svg
                     className="w-5 h-5 inline ml-1"
                     fill="currentColor"
@@ -100,52 +104,39 @@ const Navbar = () => {
                 {isDropdownOpen && (
                   <div className="absolute mt-2 w-48 rounded-md shadow-lg z-[999]">
                     <div className="py-1 bg-white shadow-xs">
-                      <a
-                        href="/rings"
-                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-                      >
-                        Rings
-                      </a>
-                      <a
-                        href="/necklaces"
-                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-                      >
-                        Necklaces
-                      </a>
-                      <a
-                        href="/earrings"
-                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-                      >
-                        Earrings
-                      </a>
+                     
+                          <Link to="/rings"
+                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
+               Rings
+              </Link>
+                    
+                    
+                         <Link to="/necklaces"
+                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
+               Necklaces
+              </Link>
+                      
+                    
+              <Link to="/earrings"
+                        className="block text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
+              Earrings
+              </Link>
                     </div>
                   </div>
                 )}
               </div>
-              <a
-                href="materials"
-                className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-              >
+              <Link to="/materials" className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
                 Materials
-              </a>
-              <a
-                href="/aboutus"
-                className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-              >
+              </Link>
+              <Link to="/aboutus" className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
                 About Us
-              </a>
-              <a
-                href="#"
-                className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-              >
+              </Link>
+              <Link to="/blog" className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
                 Blog
-              </a>
-              <a
-                href="/contactus"
-                className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase"
-              >
+              </Link>
+              <Link to="/contactus" className="text-gray-500 hover:text-gray-800 px-4 py-2 rounded-md text-md uppercase">
                 Contact Us
-              </a>
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-6">
@@ -160,12 +151,13 @@ const Navbar = () => {
               <FaTwitter />
             </a>
             {/* Checkout Cart */}
-            <a href="#" className="relative flex items-center text-gray-500 hover:text-gray-800 text-md">
+            <Link to="/cart" className="relative flex items-center text-gray-500 hover:text-gray-800 mx-2">
+           
               <FaShoppingCart />
               <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center -translate-x-2 translate-y-1/2">
-                {cartCount}
+              {getTotalQuantity()}
               </span>
-            </a>
+           </Link>
           </div>
         </div>
       </div>
