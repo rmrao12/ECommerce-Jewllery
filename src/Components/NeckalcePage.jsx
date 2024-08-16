@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useCart } from '../Contexts/CartContext';
 
 const ITEMS_PER_PAGE = 12;
 
 const NecklacePage = () => {
   const [necklaces, setNecklaces] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+
+ 
+  const { addToCart } = useCart(); 
+ 
+  const handleAddToCart = (item) => {
+    const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+    console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
+    addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+  };
 
   useEffect(() => {
     const storedProducts = localStorage.getItem('productDetails');
@@ -63,19 +73,23 @@ const NecklacePage = () => {
               className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
               <Link to={`/product/${item.id}`} className="block">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full object-cover h-64"
-                />
-                <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
-                  <h2 className="text-xl prata-font mb-2">{item.name}</h2>
-                  <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
-                  <div className="action-btn absolute bottom-[-2rem] left-0 mt-0 px-[1rem] right-0 opacity-[0]">
-                    <a href="" data-quantity="1" class="add_to_cart_button uppercase prata-font" data-product_id="${item.id}">Add to cart</a>
-                  </div>
-                </div>
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-full object-cover h-64"
+            />
+            </Link>
+            <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
+            <Link to={`/product/${item.id}`} className="block">
+              <h2 className="text-xl prata-font mb-2">{item.name}</h2>
+              <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
               </Link>
+              <div className="action-btn absolute bottom-[-2rem] left-0 mt-0 px-[1rem] right-0 opacity-[0]">
+              <button
+             onClick={() => handleAddToCart(item)} data-quantity="1" class="add_to_cart_button uppercase prata-font" data-product_id="${item.id}">Add to cart</button>
+              </div>
+                </div>
+              
             </div>
             ))}
           </div>

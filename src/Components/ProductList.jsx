@@ -29,7 +29,7 @@ const ProductList = () => {
           key={product.id}
           className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
         >
-            {/* <Link to={`/product/${product.id}`} className="block"> */}
+            <Link to={`/product/${product.id}`} className="block">
               <img
                 src={product.image}
                 alt={product.name}
@@ -47,7 +47,7 @@ const ProductList = () => {
                   Add to Cart
                 </button>
               </div>
-            {/* </Link> */}
+            </Link>
           </div>
         ))}
       </div>
