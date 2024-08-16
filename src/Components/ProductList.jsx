@@ -3,16 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { useCart } from '../Contexts/CartContext';
 
 const ProductList = () => {
-  const { id } = useParams();
+
   const [products, setProducts] = useState([]);
-  const { addToCart } = useCart(); 
-  const productDetails = JSON.parse(localStorage.getItem("productDetails"));
-  const product = productDetails[id];
-  const handleAddToCart = () => {
-    const numericPrice = parseFloat(product.price.replace(/[^0-9.-]+/g, ''));
-    console.log('Adding to cart:', { ...product, price: numericPrice,id, quantity });
-    addToCart({ ...product, price: numericPrice, id: id }, quantity);
-  };
+ 
+  
+ 
   useEffect(() => {
     const storedProductDetails = JSON.parse(localStorage.getItem('productDetails')) || {};
     // Convert object to array and limit to the first 4 items
@@ -43,7 +38,7 @@ const ProductList = () => {
                 <p className="text-gray-800 mb-2">Product Info</p>
                 {/* Add other product info here if needed */}
                 <button
-            onClick={handleAddToCart} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mt-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mt-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
                   Add to Cart
                 </button>
               </div>
