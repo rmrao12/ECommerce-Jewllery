@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import lines from '../Images/lines.png';
+import { MdOutlineArrowRightAlt } from "react-icons/md";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -27,54 +29,76 @@ const ShopPage = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-5">Product List</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {currentItems.map((product) => (
-          <div
+    <div>
+      {/* Header Section */}
+      <section className="bg-[#99988e] py-24">
+        <div className="container mx-auto">
+          <header className="text-center m-auto max-w-[350px] sm:max-w-[500px]">
+            <h1 className="text-4xl font-bold text-white text-[50px] font-prata mb-4">Shop</h1>
+            <div className="space-x-2">
+              <span>
+                <Link to="/" className="text-white hover:text-gray-800 underline">
+                  Home
+                </Link>
+              </span>
+              <span className="text-white">/</span>
+              <span className="text-white">Shop</span>
+            </div>
+          </header>
+        </div>
+      </section>
+      <section className='bg-[#F4ECE6]'>
+        <div className="container mx-auto py-10 px-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {currentItems.map((product) => (
+            <div
             key={product.id}
-            className="relative bg-white rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
+            className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
           >
-            <Link to={`/product/${product.id}`} className="block">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4 bg-white">
-                <h2 className="text-xl font-semibold mb-2">{product.name}</h2>
-                <p className="text-gray-600">{product.price}</p>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 bg-white p-4 transition-transform duration-300 transform translate-y-full hover:translate-y-0 flex flex-col items-center">
-                <p className="text-gray-800 mb-2">Product Info</p>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mt-2 opacity-0 hover:opacity-100 transition-opacity duration-300">
-                  Add to Cart
-                </button>
-              </div>
-            </Link>
+              <Link to={`/product/${product.id}`} className="block">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-64 object-cover"
+                />
+                  </Link>
+                <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
+                  <Link to={`/product/${product.id}`} className="block text-[15px]">
+                    <h2 className="text-[17px] font-prata mb-2">{product.name}</h2>
+                    <p className="text-gray-600 mb-[0.38rem]">{product.price}</p>
+                  </Link>
+                  <div className="action-btn absolute bottom-[-2rem] left-0 mt-3 px-[1rem] right-0 opacity-[0] font-semibold">
+                    <button onClick={() => handleAddToCart(product)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id="${product.id}">Add to cart<MdOutlineArrowRightAlt /></button>
+                  </div>
+                </div>
+            
+            </div>
+          ))}
+        </div>
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 btn-main text-white mr-4"
+            >
+              Previous
+            </button>
+            <span className="px-4 py-2 text-gray-700">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 btn-main text-white ml-4"
+            >
+              Next
+            </button>
           </div>
-        ))}
-      </div>
-      <div className="flex justify-center mt-6">
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-l"
-        >
-          Previous
-        </button>
-        <span className="px-4 py-2 bg-gray-100 text-gray-800">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 text-gray-800 rounded-r"
-        >
-          Next
-        </button>
-      </div>
+        </div>
+      </section>
     </div>
+    
+    
   );
 };
 

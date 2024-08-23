@@ -17,6 +17,7 @@ import ContactUs from './Components/ContactUs';
 import Blog from './Components/Blog';
 import BlogDisplay from './Components/BlogDisplay';
 import Footer from './Components/Footer'
+import OrderSuccess from './Components/OrderSuccess';
 function App() {
  
   return (
@@ -38,6 +39,7 @@ function App() {
           <Route path="/materials" element={<MaterialsPage />}/>
           <Route path="/contactus" element={<ContactUs />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/order" element={<OrderSuccess />} />
           <Route path="/blog/:id" element={<BlogDisplay />} />
         </Routes>
         <Footer />

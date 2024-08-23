@@ -14,7 +14,7 @@ const center = {
 
 const MapSection = () => {
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyBU5wYq9HER4_Nm5v4To_kAoIQHhrvxG78", // Replace with your API key
+    googleMapsApiKey: "AIzaSyBU5wYq9HER4_Nm5v4To_kAoIQHhrvxG78", 
   });
 
   const [isInfoWindowOpen, setIsInfoWindowOpen] = useState(true); // Control visibility of InfoWindow

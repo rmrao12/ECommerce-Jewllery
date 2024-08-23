@@ -1,17 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Prata&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.prata-font
+.font-prata
 {
   font-family: 'Prata' !important;
 }
-.lato-font
+.menu-item
+{
+  font-family:'Mulish';
+}
+p
 {
   font-family:'Lato';
+  font-size:18px;
+  line-height:1.8em;
+}
+.font-lato
+{
+  font-family:'Lato';
+}
+.font-mulish
+{ 
+  font-family:'Mulish';
 }
 button
 {
@@ -21,6 +36,10 @@ button
 {
   background:#375944;
   border-radius:0;
+  color:#ffffff;
+  font-family:'Mulish';
+  font-size:15px;
+  text-transform:uppercase;
 }
 .product-box:hover .product-meta
 {
@@ -36,4 +55,53 @@ button
     transition: -webkit-transform 0.3s cubic-bezier(0.17, 0.67, 0.35, 0.95);
     transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.35, 0.95);
     transition: transform 0.3s cubic-bezier(0.17, 0.67, 0.35, 0.95), -webkit-transform 0.3s cubic-bezier(0.17, 0.67, 0.35, 0.95);
+}
+.title-letter
+{
+   font-size:100px;
+   margin-bottom:-80px;
+   font-family:'Prata';
+   font-weight:700;
+   line-height:1em;
+}
+h2
+{
+  font-size:34px;
+  font-size:700;
+  line-height:1.3em;
+}
+.cart-summary th,
+.cart-summary tr
+{
+  padding-top:1em;
+  padding-bottom:1em;
+}
+.cart-summary tbody tr:nth-child(odd) 
+{
+  background-color: white;
+}
+.cart-summary tbody tr:nth-child(even) 
+{
+  background-color: #f9fafb; 
+}
+.cart-summary tr
+{
+  border-bottom:1px solid #e5e7eb;
+}
+@media(max-width:600px)
+{
+  .cart-summary tr
+  {
+    display:block !important;
+  }
+  .cart-summary td
+  {
+    border-bottom:1px solid #e5e7eb;
+  }
+  h2
+  {
+    font-size:26px;
+    font-size:700;
+    line-height:1.3em;
+  }
 }

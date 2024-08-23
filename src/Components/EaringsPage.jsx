@@ -1,14 +1,15 @@
+// src/EarringsPage.js
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCart } from '../Contexts/CartContext';
-
+import { MdOutlineArrowRightAlt } from "react-icons/md";
 const ITEMS_PER_PAGE = 12;
 
 const EarringsPage = () => {
+ 
+  const { addToCart } = useCart(); 
   const [earrings, setEarrings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
   useEffect(() => {
     const storedProducts = localStorage.getItem('productDetails');
     if (storedProducts) {
@@ -18,34 +19,33 @@ const EarringsPage = () => {
         (product) => product.category === 'earrings'
       );
       setEarrings(earringProducts);
-      setTotalPages(Math.ceil(earringProducts.length / ITEMS_PER_PAGE));
     }
   }, []);
-
-  const { addToCart } = useCart(); 
  
+  
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const currentItems = earrings.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(earrings.length / ITEMS_PER_PAGE);
+
   const handleAddToCart = (item) => {
-    const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+  const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
     console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
     addToCart({ ...item, price: numericPrice, id: item.id }, 1);
   };
-  // Paginate the earrings list
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const paginatedEarrings = earrings.slice(startIndex, endIndex);
 
-  // Handle page change
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
     }
   };
-
   return (
     <div>
-        <div className="bg-[#99988e] py-24">
+      <section className="bg-[#99988e] py-24">
+        <div class="container mx-auto">
           <header className="text-center m-auto max-w-[350px] sm:max-w-[500px]">
-            <h1 className="text-4xl font-bold text-white text-[50px] prata-font mb-4">Earrings</h1>
+            <h1 className="text-4xl font-bold text-white text-[50px] font-prata mb-4">Earrings</h1>
             <div className="space-x-2">
               <span>
                 <Link to="/" className="text-white hover:text-gray-800 underline">
@@ -63,32 +63,30 @@ const EarringsPage = () => {
             </div>
           </header>
         </div>
-      <div className="bg-[#e2dacf]">
-        <div className="max-w-6xl mx-auto py-16 px-4">
+      </section>
+      <section className="bg-[#F4ECE6]">
+        <div className="container mx-auto py-10 px-4">
+          <p>Showing {currentItems.length} of {earrings.length} Items</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {paginatedEarrings.map((item) => (
-              <div
-                key={item.id}
-                className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-              >
+            {currentItems.map(item => (
+              <div key={item.id} className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <Link to={`/product/${item.id}`} className="block">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-full object-cover h-64"
-            />
-            </Link>
-            <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
-            <Link to={`/product/${item.id}`} className="block">
-              <h2 className="text-xl prata-font mb-2">{item.name}</h2>
-              <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
-              </Link>
-              <div className="action-btn absolute bottom-[-2rem] left-0 mt-0 px-[1rem] right-0 opacity-[0]">
-              <button
-             onClick={() => handleAddToCart(item)} data-quantity="1" class="add_to_cart_button uppercase prata-font" data-product_id="${item.id}">Add to cart</button>
-              </div>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-64 object-cover"
+                  />
+                    </Link>
+                  <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
+                    <Link to={`/product/${item.id}`} className="block text-[15px]">
+                      <h2 className="text-[17px] font-prata mb-2">{item.name}</h2>
+                      <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
+                    </Link>
+                    <div className="action-btn absolute bottom-[-2rem] left-0 mt-3 px-[1rem] right-0 opacity-[0] font-semibold">
+                      <button onClick={() => handleAddToCart(item)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id={item.id} >Add to cart<MdOutlineArrowRightAlt /></button>
+                    </div>
                   </div>
-               
+              
               </div>
             ))}
           </div>
@@ -96,7 +94,7 @@ const EarringsPage = () => {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-[#375944]/[0.9] text-white"
+              className="px-4 py-2 btn-main text-white mr-4"
             >
               Previous
             </button>
@@ -106,13 +104,13 @@ const EarringsPage = () => {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-[#375944] text-white"
+              className="px-4 py-2 btn-main text-white ml-4"
             >
               Next
             </button>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
