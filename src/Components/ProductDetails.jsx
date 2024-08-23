@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import starFilled from '../Images/starFilled.png';
 import starEmpty from '../Images/starNotFilled.png';
-import '../CssFiles/ProductDetail.css'; // Ensure this CSS file is imported
+import '../CssFiles/ProductDetail.css'; 
 import { useCart } from "../Contexts/CartContext";
 
 const ProductDetail = () => {

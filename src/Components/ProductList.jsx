@@ -4,6 +4,7 @@ import { useCart } from '../Contexts/CartContext';
 import { MdOutlineArrowRightAlt } from "react-icons/md";
 
 const ProductList = () => {
+  const { addToCart } = useCart(); 
   const [products, setProducts] = useState([]); 
   useEffect(() => {
     const storedProductDetails = JSON.parse(localStorage.getItem('productDetails')) || {};
@@ -11,7 +12,12 @@ const ProductList = () => {
     const productArray = Object.values(storedProductDetails).slice(0, 8);
     setProducts(productArray);
   }, []);
-
+  const handleAddToCart = (item) => {
+    const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+      console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
+      addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+    };
+  
   return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((product) => (

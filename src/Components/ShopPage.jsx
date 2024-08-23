@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import lines from '../Images/lines.png';
 import { MdOutlineArrowRightAlt } from "react-icons/md";
+import { useCart } from '../Contexts/CartContext';
 
 const ITEMS_PER_PAGE = 20;
 
 const ShopPage = () => {
+  const { addToCart } = useCart(); 
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -15,7 +17,12 @@ const ShopPage = () => {
     const productArray = Object.values(storedProductDetails);
     setProducts(productArray);
   }, []);
-
+  const handleAddToCart = (item) => {
+    const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+      console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
+      addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+    };
+  
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
