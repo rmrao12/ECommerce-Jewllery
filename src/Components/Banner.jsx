@@ -8,7 +8,7 @@ import product2 from '../Images/product-1.jpg';
 
 const Banner = () => {
   return (
-    <div className="flex flex-col lg:flex-row relative">
+    <div className="flex flex-col lg:flex-row relative pt-20">
       {/* Background Image Column */}
       <div 
         className="w-full lg:w-1/2 bg-cover bg-center relative self-stretch lg:order-first order-last"

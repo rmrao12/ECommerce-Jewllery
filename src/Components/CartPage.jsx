@@ -29,7 +29,7 @@ const CartPage = () => {
       <div>
         {/* Header Section */}
         <section className="bg-[#99988e] py-24">
-          <div class="container mx-auto">
+          <div class="container mx-auto pt-20">
             <header className="text-center m-auto max-w-[350px] sm:max-w-[500px]">
               <h1 className="text-[34px] font-bold text-white font-prata mb-4">Cart</h1>
               <div className="space-x-2">

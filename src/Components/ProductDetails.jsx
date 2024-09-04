@@ -59,7 +59,7 @@ const ProductDetail = () => {
   };
 
   const renderStars = (rating) => (
-    <div className="flex mb-4">
+    <div className="flex mb-4 pt-20">
       {Array.from({ length: 5 }, (_, i) => (
         <img
           key={i}

@@ -11,7 +11,7 @@ import FAQSection from './FAQSection';
 
 const ContactUs = () => {
   return (
-    <div className="bg-white">
+    <div className="bg-white pt-20">
       {/* Header Section */}
       <section className='bg-[#F4ECE6] py-12 mb-10'
        style={{ backgroundImage: `url(${lines})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>

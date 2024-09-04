@@ -15,7 +15,7 @@ export const Blog = () => {
     <div>
       {/* Header Section */}
       <section className="bg-[#99988e] py-24">
-        <div class="container mx-auto">
+        <div class="container mx-auto pt-20">
           <header className="text-center m-auto max-w-[350px] sm:max-w-[500px]">
             <h1 className="text-4xl font-bold text-white text-[50px] font-prata mb-4">Blog</h1>
             <div className="space-x-2">

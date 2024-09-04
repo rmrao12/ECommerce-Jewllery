@@ -5,7 +5,7 @@ const CheckoutPage = () => {
   const { cart, getTotalPrice } = useCart();
 
   return (
-    <div className="bg-[#f5ece6]">
+    <div className="bg-[#f5ece6] pt-20">
       {/* Header Section */}
       <section className="bg-[#99988e] py-24">
           <div class="container mx-auto">

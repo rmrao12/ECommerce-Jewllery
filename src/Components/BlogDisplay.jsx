@@ -47,7 +47,7 @@ console.log(nextIndex)
           <img 
             src={blog.mainImage} 
             alt={blog.title}             
-            className="w-full h-[400px] object-cover rounded-lg " 
+            className="w-full h-[400px] object-cover rounded-lg pt-20" 
           />
         </div>
       )}
