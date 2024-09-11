@@ -3,39 +3,85 @@ import { Link, useParams } from 'react-router-dom';
 import { useCart } from '../Contexts/CartContext';
 import { MdOutlineArrowRightAlt } from "react-icons/md";
 
+import { useDispatch,useSelector } from 'react-redux';
+
+import { fetchProductsByCategory } from '../Redux/StoreAPIs.jsx'
 const ITEMS_PER_PAGE = 12;
 
 const NecklacePage = () => {
-  const [necklaces, setNecklaces] = useState([]);
+  
   const [currentPage, setCurrentPage] = useState(1);
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+  const [currentItems, setCurrentItems] = useState([]);
 
+
+  const [necklaces, setNecklaces] = useState([]);
+  
+  const dispatch = useDispatch();
+    // Use the correct state access here
+    const posts = useSelector((state) => {
+      return state.post.categories;});
+    const error = useSelector((state) => state.post.error);
+    const status = useSelector((state) => state.post.status);
+const catId = "66d55da88f17d5a5755631dc";
+    useEffect(()=>
+    {
+      //  if(status=='idle')
+       // {
+          if(catId!="")
+            dispatch(fetchProductsByCategory(catId));
+       // }
+
+    },[catId,dispatch]);
+
+    let content;
+
+    const [totalPages, setTotalPages] = useState(0);
+    // Update products only when posts data is fetched and status is 'Succeeded'
+  useEffect(() => {
+    if (status === 'Succeeded') {
+     // console.log("Get by cat")
+     // console.log(posts.data);
+      setNecklaces(posts.data);
+     let tempNecklaces = posts.data;
+     if(tempNecklaces != undefined && tempNecklaces.length > 0)
+      {
+      setCurrentItems(tempNecklaces.slice(indexOfFirstItem, indexOfLastItem));
+      setTotalPages(Math.ceil(tempNecklaces.length / ITEMS_PER_PAGE));
+      }
+    }
+  }, [status, posts]);
+
+  if (status === 'Loading') {
+    content = <div>...loading</div>;
+  } 
+  else if (status === 'Failed') {
+    content = <div>{error}</div>;
+  }
  
   const { addToCart } = useCart(); 
  
-  const handleAddToCart = (item) => {
-    const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
-    console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
-    addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+  const handleAddToCart = (id) => {
+    // const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+    // console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
+    // addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+    addToCart( id , 1);
   };
 
-  useEffect(() => {
-    const storedProducts = localStorage.getItem('productDetails');
-    if (storedProducts) {
-      const products = JSON.parse(storedProducts);
-      // Filter only necklace products
-      const necklaceProducts = Object.keys(products)
-        .map(key => products[key])
-        .filter(product => product.category === 'necklace');
-      setNecklaces(necklaceProducts);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedProducts = localStorage.getItem('productDetails');
+  //   if (storedProducts) {
+  //     const products = JSON.parse(storedProducts);
+  //     // Filter only necklace products
+  //     const necklaceProducts = Object.keys(products)
+  //       .map(key => products[key])
+  //       .filter(product => product.category === 'necklace');
+  //     setNecklaces(necklaceProducts);
+  //   }
+  // }, []);
 
-  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
-  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = necklaces.slice(indexOfFirstItem, indexOfLastItem);
-
-  const totalPages = Math.ceil(necklaces.length / ITEMS_PER_PAGE);
-
+  
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
@@ -68,15 +114,19 @@ const NecklacePage = () => {
     </section>
     <section className="bg-[#F4ECE6]">
       <div className="container mx-auto py-10 px-4">
-        <p className="mb-4">Showing {currentItems.length} of {necklaces.length} Items</p>
+        <p className="mb-4">Showing {currentItems.length} of {necklaces != undefined ? necklaces.length : 0}  Items</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentItems.map(item => 
+          { console.log("currentItems.length")}
+          {console.log(currentItems.length) }
+          {
+            
+            currentItems.map(item => 
           (
             <div
-              key={item.id}
+              key={item._id}
               className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
             >
-              <Link to={`/product/${item.id}`} className="block">
+              <Link to={`/product/${item._id}`} className="block">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -84,12 +134,12 @@ const NecklacePage = () => {
                   />
                    </Link>
                   <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
-                    <Link to={`/product/${item.id}`} className="block text-[15px]">
+                    <Link to={`/product/${item._id}`} className="block text-[15px]">
                       <h2 className="text-[17px] font-prata mb-2">{item.name}</h2>
-                      <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
+                      <p className="text-gray-600 mb-[0.38rem]">${item.price}</p>
                     </Link>
                     <div className="action-btn absolute bottom-[-2rem] left-0 mt-3 px-[1rem] right-0 opacity-[0] font-semibold">
-                      <button onClick={() => handleAddToCart(item)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id={item.id} >Add to cart<MdOutlineArrowRightAlt /></button>
+                      <button onClick={() => handleAddToCart(item._id)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id={item.id} >Add to cart<MdOutlineArrowRightAlt /></button>
                     </div>
                   </div>
                

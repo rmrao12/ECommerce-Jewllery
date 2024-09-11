@@ -3,35 +3,63 @@ import Product from '../models/product.js';
 
 // Add or update item in the cart
 export const addToCart = async (req, res) => {
-    try {
-      const { product, quantity } = req.body;
-      if (quantity <= 0) return res.status(400).json({ error: 'Quantity must be greater than 0' });
-  
-      const products = await Product.findById(product);
-      if (!products) return res.status(404).json({ error: 'Product not found' });
-  
+  try {
+      const { product, quantity,sign } = req.body;
+
+      
+      // Check if quantity is valid
+      if (quantity <= 0) {
+          return res.status(400).json({ error: 'Quantity must be greater than 0' });
+      }
+
+      // Find the product by ID
+      const foundProduct = await Product.findById(product);
+      if (!foundProduct) {
+          return res.status(404).json({ error: 'Product not found' });
+      }
+
+      // Find or create cart based on sessionId
       let cart = await Cart.findOne({ sessionId: req.sessionId });
       if (!cart) {
-        cart = new Cart({ sessionId: req.sessionId, items: [] });
+          cart = new Cart({ sessionId: req.sessionId, items: [] });
       }
-  
+
+      // Check if the product already exists in the cart
       const existingItem = cart.items.find(item => item.product.equals(product));
       if (existingItem) {
-        existingItem.quantity += quantity;
-        if (existingItem.quantity <= 0) {
-          cart.items = cart.items.filter(item => !item.product.equals(product));
-        }
+          // Update quantity if the item exists
+          console.log('Sign : '+sign);
+          if(sign == '-')
+            {
+              if(existingItem.quantity - quantity < 0)
+                existingItem.quantity = 0;
+              else
+              existingItem.quantity -= quantity;
+            
+          }
+          else{
+            existingItem.quantity += quantity;
+            }
+          
+          // Optionally, remove item if quantity is zero
+          // if (existingItem.quantity <= 0) {
+          //     cart.items = cart.items.filter(item => !item.product.equals(product));
+          // }
       } else {
-        cart.items.push({ product: product, quantity });
+          // Add new item to cart if it doesn't exist
+          cart.items.push({ product: foundProduct._id, quantity });
       }
-  
-      await cart.save();
-      res.status(200).json({ message: 'Item added to cart successfully' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
 
+      // Save the updated cart
+      await cart.save();
+
+      // Respond with success message
+      res.status(200).json({ message: 'Item added to cart successfully' });
+  } catch (error) {
+      // Handle any errors
+      res.status(500).json({ error: error.message });
+  }
+};
 // Remove item from the cart
 export const removeFromCart = async (req, res) => {
   try {
@@ -87,7 +115,7 @@ export const getCartTotals = async (req, res) => {
     const totalQuantity = cart.items.reduce((acc, item) => acc + item.quantity, 0);
     const totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * parseFloat(item.product.price), 0);
 
-    res.status(200).json({ totalQuantity, totalPrice });
+    res.status(200).json({cart,totalQuantity,totalPrice});
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

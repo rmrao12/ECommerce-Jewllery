@@ -12,12 +12,17 @@ import cartRouter from './routes/cartRoute.js';
 dotenv.config(); // Ensure dotenv is configured before using environment variables
 
 const app = express();
+app.use('/uploads', express.static('uploads')); // /uploads is a folder
 
 // Middleware setup
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173', // Replace with your client origin
+    credentials: true, // Allow credentials (cookies) to be sent
+}));
+
 app.use(cookieParser()); // Add cookie-parser middleware
 
 // Route setup

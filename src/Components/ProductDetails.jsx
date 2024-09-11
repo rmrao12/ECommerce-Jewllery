@@ -5,9 +5,48 @@ import starFilled from '../Images/starFilled.png';
 import starEmpty from '../Images/starNotFilled.png';
 import '../CssFiles/ProductDetail.css'; 
 import { useCart } from "../Contexts/CartContext";
+import { useDispatch,useSelector } from 'react-redux';
+
+import { fetchProductById } from '../Redux/StoreAPIs.jsx'
 
 const ProductDetail = () => {
+  
   const { id } = useParams();
+  const [product, setProducts] = useState([]); 
+  const [category, setCategory] = useState(null);
+  const dispatch = useDispatch();
+    // Use the correct state access here
+    const posts = useSelector((state) => {
+      return state.post.products;});
+    const error = useSelector((state) => state.post.error);
+    const status = useSelector((state) => state.post.status);
+
+    useEffect(()=>
+    {       
+      dispatch(fetchProductById(id));       
+
+    },[id,dispatch]);
+
+  
+    let content;
+
+    // Update products only when posts data is fetched and status is 'Succeeded'
+  useEffect(() => {
+    if (status === 'Succeeded') {
+     
+      setProducts(posts.data);
+    }
+  }, [status, posts]);
+
+  if (status === 'Loading') {
+    content = <div>...loading</div>;
+  } 
+  else if (status === 'Failed') {
+    content = <div>{error}</div>;
+  }
+
+
+ 
   const { addToCart } = useCart(); // Destructure addToCart from context
   const [activeTab, setActiveTab] = useState("description");
   const [reviews, setReviews] = useState([]);
@@ -20,9 +59,6 @@ const ProductDetail = () => {
   const [hoverRating, setHoverRating] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
-  const productDetails = JSON.parse(localStorage.getItem("productDetails"));
-  const product = productDetails[id];
-  
   useEffect(() => {
     const storedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
     setReviews(storedReviews.filter(review => review.productId === id));
@@ -45,9 +81,10 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    const numericPrice = parseFloat(product.price.replace(/[^0-9.-]+/g, ''));
-    console.log('Adding to cart:', { ...product, price: numericPrice,id, quantity });
-    addToCart({ ...product, price: numericPrice, id: id }, quantity);
+  //  console.log(product);
+    const numericPrice = parseFloat(posts.data&&posts.data['0'].price);
+   
+    addToCart( posts.data&&posts.data['0']._id , quantity);
   };
 
   const incrementQuantity = () => {
@@ -79,7 +116,7 @@ const ProductDetail = () => {
       return (
         <div>
           <h2 className="font-prata font-bold mb-3">Description</h2>
-          <p className="text-gray-800">{product.description}</p>
+          <p className="text-gray-800">{posts.data&&posts.data['0'].description}</p>
         </div>
       );
     } else if (activeTab === "additional") {
@@ -87,10 +124,11 @@ const ProductDetail = () => {
         <div>
           <h2 className="font-prata font-bold mb-3">Additional Information</h2>
           <ul className="list-disc pl-5 text-gray-800">
-            <li><strong>Material:</strong> {product.additionalInfo.material}</li>
-            <li><strong>{product.additionalInfo.dimensions ? "Dimensions:" : product.additionalInfo.length ? "Length:" : "Size:"}</strong> {product.additionalInfo.dimensions || product.additionalInfo.length || product.additionalInfo.size}</li>
-            <li><strong>Weight:</strong> {product.additionalInfo.weight}</li>
-            <li><strong>Origin:</strong> {product.additionalInfo.origin}</li>
+            <li><strong>Material:</strong> {posts.data&&posts.data['0'].additionalInfo.material}</li>
+            <li><strong>{posts.data&&posts.data['0'].additionalInfo.dimensions ? "Dimensions:" : posts.data&&posts.data['0'].additionalInfo.length ? "Length:" : "Size:"}</strong> {posts.data&&posts.data['0'].additionalInfo.dimensions
+             || posts.data&&posts.data['0'].additionalInfo.length ||posts.data&&posts.data['0'].additionalInfo.size}</li>
+            <li><strong>Weight:</strong> {posts.data&&posts.data['0'].additionalInfo.weight}</li>
+            <li><strong>Origin:</strong> {posts.data&&posts.data['0'].additionalInfo.origin}</li>
           </ul>
         </div>
       );
@@ -160,11 +198,12 @@ const ProductDetail = () => {
       );
     }
   };
-
+//console.log("data",category.name)
   return (
     <div className="px-4 py-10 bg-[#f5ece6]">
+     {/*console.log("data",posts.data&&posts.data['0'].name)} */}
       <section>
-          <div class="container mx-auto mb-8">
+          <div class="container mx-auto mb-8 mt-20">
             <header>
               <div className="space-x-1">
                 <span>
@@ -179,13 +218,13 @@ const ProductDetail = () => {
                   </Link>
                 </span>
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
-                <span>
+                {/* <span>
                   <Link to="/${product.category}" className="capitalize text-[#595959] font-lato hover:text-[#595959]/[90%] underline">
-                    {product.category}
+                    {posts.data&&posts.data['0'].category}
                   </Link>
-                </span>
+                </span> */}
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
-                <span class="text-[#595959] hover:text-[#595959]/[90%] font-lato">{product.name}</span>
+                <span class="text-[#595959] hover:text-[#595959]/[90%] font-lato">{posts.data&&posts.data['0'].name}</span>
               </div>
             </header>
           </div>        
@@ -197,8 +236,8 @@ const ProductDetail = () => {
             <div className="w-full lg:w-1/2 pr-4 mb-5 lg:mb-0">
               <div className="zoom-container">
                 <img
-                  src={product.image}
-                  alt={product.name}
+                  src={posts.data&&posts.data['0'].image}
+                  alt={posts.data&&posts.data['0'].name}
                   className="zoom-image"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -210,9 +249,9 @@ const ProductDetail = () => {
 
             {/* Product Details Section */}
             <div className="w-full lg:w-1/2">
-              <h1 className="md:text-[38px] text-[#212121] font-prata font-bold mb-5">{product.name}</h1>
-              <p className="text-xl text-gray-600 mb-5">{product.price}</p>
-              <p className="text-gray-800">{product.description}</p>
+              <h1 className="md:text-[38px] text-[#212121] font-prata font-bold mb-5">{posts.data&&posts.data['0'].name}</h1>
+              <p className="text-xl text-gray-600 mb-5">${posts.data&&posts.data['0'].price}</p>
+              <p className="text-gray-800">{posts.data&&posts.data['0'].description}</p>
               <div className="flex items-center gap-4 my-5">
                 <div className="flex items-center ">
                   <div className="flex items-center mb-0 border max-w-[120px] border-gray-300 p-3">

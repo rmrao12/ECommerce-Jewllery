@@ -3,37 +3,88 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useCart } from '../Contexts/CartContext';
 import { MdOutlineArrowRightAlt } from "react-icons/md";
+
+import { useDispatch,useSelector } from 'react-redux';
+
+import { fetchProductsByCategory } from '../Redux/StoreAPIs.jsx'
 const ITEMS_PER_PAGE = 12;
 
 const RingsPage = () => {
  
-  const { addToCart } = useCart(); 
-  const [rings, setRings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  useEffect(() => {
-    const storedProducts = localStorage.getItem('productDetails');
-    if (storedProducts) {
-      const products = JSON.parse(storedProducts);
-      // Filter only earring products
-      const ringProducts = Object.keys(products).map(key => products[key]).filter(
-        (product) => product.category === 'ring'
-      );
-      setRings(ringProducts);
-    }
-  }, []);
- 
-  
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-  const currentItems = rings.slice(indexOfFirstItem, indexOfLastItem);
+  const [currentItems, setCurrentItems] = useState([]);
+  
 
-  const totalPages = Math.ceil(rings.length / ITEMS_PER_PAGE);
+  const [rings, setRings] = useState([]);
 
-  const handleAddToCart = (item) => {
-  const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
-    console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
-    addToCart({ ...item, price: numericPrice, id: item.id }, 1);
-  };
+  const dispatch = useDispatch();
+    // Use the correct state access here
+    const posts = useSelector((state) => {
+      return state.post.categories;});
+    const error = useSelector((state) => state.post.error);
+    const status = useSelector((state) => state.post.status);
+const catId = "66d55d9f8f17d5a5755631da";
+    useEffect(()=>
+    {
+        if(status=='idle')
+        {
+          if(catId!="")
+            dispatch(fetchProductsByCategory(catId));
+        }
+
+    },[catId,status,dispatch]);
+
+    let content;
+    const [totalPages, setTotalPages] = useState(0);
+    // Update products only when posts data is fetched and status is 'Succeeded'
+  useEffect(() => {
+    if (status === 'Succeeded') 
+    {     
+      setRings(posts.data);
+      let tempRings = posts.data;
+      if(tempRings != undefined && tempRings.length > 0)
+      {
+        setCurrentItems(tempRings.slice(indexOfFirstItem, indexOfLastItem));
+        setTotalPages(Math.ceil(tempRings.length / ITEMS_PER_PAGE));
+      }
+    }
+  }, [status, posts]);
+
+  if (status === 'Loading') {
+    content = <div>...loading</div>;
+  } 
+  else if (status === 'Failed') {
+    content = <div>{error}</div>;
+  }
+
+
+  const { addToCart } = useCart(); 
+  
+  // useEffect(() => {
+  //   const storedProducts = localStorage.getItem('productDetails');
+  //   if (storedProducts) {
+  //     const products = JSON.parse(storedProducts);
+  //     // Filter only earring products
+  //     const ringProducts = Object.keys(products).map(key => products[key]).filter(
+  //       (product) => product.category === 'ring'
+  //     );
+  //     setRings(ringProducts);
+  //   }
+  // }, []);
+ 
+  
+  
+
+  const handleAddToCart = (id) => {
+    // const numericPrice = parseFloat(item.price.replace(/[^0-9.-]+/g, ''));
+    //   console.log('Adding to cart:', { ...item, price: numericPrice, id: item.id, quantity: 1 });
+    //   addToCart({ ...item, price: numericPrice, id: item.id }, 1);
+      // const numericPrice = parseFloat(product.price);
+      // console.log('Adding to cart:', { ...product, price: numericPrice,id, quantity });
+      addToCart( id , 1);
+    };
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
@@ -66,11 +117,11 @@ const RingsPage = () => {
       </section>
       <section className="bg-[#F4ECE6]">
         <div className="container mx-auto py-10 px-4">
-          <p>Showing {currentItems.length} of {rings.length} Items</p>
+          <p>Showing {currentItems.length} of {rings != undefined ? rings.length : 0} Items</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {currentItems.map(item => (
-              <div key={item.id} className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <Link to={`/product/${item.id}`} className="block">
+              <div key={item._id} className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <Link to={`/product/${item._id}`} className="block">
                   <img
                     src={item.image}
                     alt={item.name}
@@ -78,12 +129,12 @@ const RingsPage = () => {
                   />
                   </Link>
                   <div className="p-4 bg-white mx-3 product-meta px-[1rem] pt-[1rem] pb-[1.5rem] relative rounded">
-                    <Link to={`/product/${item.id}`} className="block text-[15px]">
+                    <Link to={`/product/${item._id}`} className="block text-[15px]">
                       <h2 className="text-[17px] font-prata mb-2">{item.name}</h2>
-                      <p className="text-gray-600 mb-[0.38rem]">{item.price}</p>
+                      <p className="text-gray-600 mb-[0.38rem]">${item.price}</p>
                     </Link>
                     <div className="action-btn absolute bottom-[-2rem] left-0 mt-3 px-[1rem] right-0 opacity-[0] font-semibold">
-                      <button onClick={() => handleAddToCart(item)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id={item.id} >Add to cart<MdOutlineArrowRightAlt /></button>
+                      <button onClick={() => handleAddToCart(item._id)} data-quantity="1" class="flex uppercase items-center gap-2 add_to_cart_button text-[15px] font-mulish" data-product_id={item.id} >Add to cart<MdOutlineArrowRightAlt /></button>
                     </div>
                   </div>
                 
@@ -115,4 +166,4 @@ const RingsPage = () => {
   );
 };
 
-export default RingsPage;
+export default React.memo(RingsPage);

@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useCart } from '../Contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { GoTrash } from "react-icons/go";
 import { Link } from 'react-router-dom';
 const CartPage = () => {
+
     const { cart, updateQuantity, removeFromCart, getTotalPrice } = useCart();
     const navigate = useNavigate(); // Hook for navigation
 
     const handleQuantityChange = (id, delta) => {
-      const item = cart.find(item => item.id === id);
+      const item = cart.items.find(item => item.product._id === id);
       if (item) {
-        const newQuantity = item.quantity + delta;
+        // console.log("Item found");
+        // console.log('delta : '+delta);
+        let sign="";
+        if(delta<0)
+          {
+            sign="-";
+            }
+            else
+            {
+              sign="+";
+            };
+         const newQuantity = item.quantity + delta;
         if (newQuantity > 0) {
-          updateQuantity(id, newQuantity);
+          updateQuantity(id, 1,sign);
         }
       }
     };
@@ -25,6 +37,35 @@ const CartPage = () => {
       navigate('/checkout'); // Navigate to checkout page
     };
 
+  //   const [totalPrice, setTotalPrice] = useState(0);
+
+ 
+  // // Memoize the getTotalPrice function
+  // const calculateTotalPrice = useCallback(async () => {
+  //   const total = await getTotalPrice();  // Await the async function
+  //   return total;
+  // }, [cart]);
+
+  // useEffect(() => {
+  //   const fetchTotalPrice = async () => {
+  //     const total = await calculateTotalPrice();  // Await the memoized async function     
+  //     setTotalPrice(total);  // Set the state with the resolved total price
+  //   };
+
+  //   //fetchTotalPrice();
+  // }, [calculateTotalPrice]);  // Use memoized function as the dependency
+
+    let tPrice = () => {
+
+      let tp= 0;
+
+      if(cart.items != undefined){ 
+        cart.items.map((item) =>{
+          tp +=item.product.price * item.quantity;
+      });
+      }
+      return tp;
+    };
     return (
       <div>
         {/* Header Section */}
@@ -46,7 +87,8 @@ const CartPage = () => {
         </section>
         <section className="xl:px-0 px-6 py-16 bg-[#f5ece6]">
           <div className="container mx-auto py-10 px-4 bg-white shadow-md md:p-10">
-            {cart.length === 0 ? (
+         
+            { Object.keys(cart).length <=0 || cart.items == undefined || cart.items.length < 1 ? (
               <div className="text-center">
                 <h2 className="text-gray-500 font-semibold text-4xl mb-8">Your cart is currently empty.</h2>
                 <Link to="/shop" className="px-8 py-4 mt-6 text-white btn-main hover:bg-[#375944]/[0.6]">
@@ -68,14 +110,15 @@ const CartPage = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {cart.map((item) => (
-                        <tr key={item.id} className="block sm:table-row">
+                      { cart.items != undefined ? cart.items.map((item) => (
+                        
+                        <tr key={item.product._id} className="block sm:table-row">
                           <td className="flex justify-between items-center sm:table-cell px-4 py-2">
                             <span className="block sm:hidden text-[16px] font-semibold text-gray-500">
                               Action
                             </span>
                             <button
-                              onClick={() => handleDelete(item.id)}
+                              onClick={() => handleDelete(item.product._id)}
                               className="px-4 py-2 text-red-500 hover:bg-[#f5f5f5]"
                             >
                               <GoTrash />
@@ -87,18 +130,18 @@ const CartPage = () => {
                             </span>
                             <div className="flex items-center">
                               <img
-                                src={item.image}
-                                alt={item.name}
+                                src={item.product.image}
+                                alt={item.product.name}
                                 className="w-[55px] h-[55px] object-cover rounded-lg mr-6"
                               />
-                              <p className="text-[16px] mb-0">{item.name}</p>
+                              <p className="text-[16px] mb-0">{item.product.name}</p>
                             </div>
                           </td>
                           <td className="flex justify-between items-center sm:table-cell px-4 py-2">
                             <span className="block sm:hidden text-[16px] font-semibold text-gray-500">
                               Price
                             </span>
-                            <p className="text-gray-600 mb-0 text-[16px]">${item.price}</p>
+                            <p className="text-gray-600 mb-0 text-[16px]">${item.product.price}</p>
                           </td>
                           <td className="flex justify-between items-start sm:table-cell px-4 py-2">
                             <span className="block sm:hidden text-[16px] font-semibold text-gray-500">
@@ -106,7 +149,7 @@ const CartPage = () => {
                             </span>
                             <div className="flex items-center mb-0 border max-w-[120px] border-gray-300 p-1">
                               <button
-                                onClick={() => handleQuantityChange(item.id, -1)}
+                                onClick={() => handleQuantityChange(item.product._id, -1)}
                                 className="border-0 flex items-center justify-center bg-transparent text-gray-800 rounded-0 w-[30px] h-[30px]"
                               >
                                 -
@@ -118,7 +161,7 @@ const CartPage = () => {
                                 className="w-12 text-center border-0 border-gray-300 h-[30px]"
                               />
                               <button
-                                onClick={() => handleQuantityChange(item.id, 1)}
+                                onClick={() => handleQuantityChange(item.product._id, 1)}
                                 className="border-0 flex items-center justify-center bg-transparent text-gray-800 rounded-0 w-[30px] h-[30px]"
                               >
                                 +
@@ -129,10 +172,13 @@ const CartPage = () => {
                             <span className="block sm:hidden text-[16px] font-semibold text-gray-500">
                               Subtotal
                             </span>
-                            <p className="text-lg text-[16px]">${item.price * item.quantity}</p>
+                            <p className="text-lg text-[16px]">${item.product.price * item.quantity}</p>
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    :
+                    <>
+                    </>}
                     </tbody>
                   </table>
 
@@ -141,7 +187,7 @@ const CartPage = () => {
                   <h2 className="text-[28px] font-bold mb-5 font-prata text-left">Cart total</h2>
                   <div className="flex justify-between">
                     <p className="font-semibold">Total Price:</p>
-                    <p className="text-right">${getTotalPrice()}</p>
+                    <p className="text-right">${tPrice()}</p>
                   </div>
                   <hr className="my-4"></hr>
                   <button
@@ -159,4 +205,4 @@ const CartPage = () => {
     );
 };
 
-export default CartPage;
+export default React.memo(CartPage);

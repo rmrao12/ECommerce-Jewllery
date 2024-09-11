@@ -7,13 +7,14 @@ const generateSessionId = () => {
 const sessionMiddleware = async (req, res, next) => {
   
   console.log('Cookies:', req.cookies);
-
+  console.log("sessionMiddleware");
   let sessionId = req.cookies.sessionId;
 
-  if (!sessionId) {
+  if (!sessionId || sessionId=='') 
+  {
     sessionId = generateSessionId();
     await Cart.create({ sessionId, items: [] });
-    res.cookie('sessionId', sessionId, { httpOnly: true, maxAge: 9990000  });
+    res.cookie('sessionId', sessionId, { httpOnly: true, maxAge: 9990000,secure:false });
   }
 
   req.sessionId = sessionId;

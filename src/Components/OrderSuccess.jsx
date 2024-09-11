@@ -25,7 +25,13 @@ const OrderSuccess = () => {
         </section>
         <section className="xl:px-0 px-6 py-16 bg-[#f5ece6]">
           <div className="container mx-auto py-10 px-4 bg-white shadow-md md:p-10">
-            {cart.length === 0 ? (
+            <div className="text-center">
+                <h2 className="text-gray-500 font-semibold text-4xl mb-8">Your Order has been placed successfully.</h2>
+                <Link to="/shop" className="px-8 py-4 mt-6 text-white btn-main hover:bg-[#375944]/[0.6]">
+                  Go Back to Shop
+                </Link>
+                </div>
+            {/* {cart.length === 0 ? (
               <div className="text-center">
                 <h2 className="text-gray-500 font-semibold text-4xl mb-8">Your Order has been placed successfully.</h2>
                 <Link to="/shop" className="px-8 py-4 mt-6 text-white btn-main hover:bg-[#375944]/[0.6]">
@@ -35,10 +41,10 @@ const OrderSuccess = () => {
               ) : (
               <div>
                 <h2 className="text-[34px] font-bold mb-5 font-prata">Shopping Cart</h2>
-                {cart.map(item => (
+                {cart.items.map(item => (
                   <div>
                     
-                    <div key={item.id} className="flex justify-between items-center border-b border-gray-200 py-6">
+                    <div key={item._id} className="flex justify-between items-center border-b border-gray-200 py-6">
                       <div className="flex items-center w-full">
                         <img src={item.image} alt={item.name} className="w-32 h-32 object-cover rounded-lg mr-6" />
                         <div className="flex-grow">
@@ -91,7 +97,7 @@ const OrderSuccess = () => {
                   </button>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
         </section>
       </div>

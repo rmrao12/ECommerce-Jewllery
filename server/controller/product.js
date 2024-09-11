@@ -2,7 +2,7 @@ import newProduct from "../models/product.js";
 
 export const postProductData = async (req, res) => {
     try {
-        const { id, name } = req.body;
+        const { id, name, price, description, category } = req.body;
 
         // Check if a product with the same ID or name already exists
         const existingProduct = await newProduct.findOne({ $or: [{ id }, { name }] });
@@ -14,8 +14,17 @@ export const postProductData = async (req, res) => {
             });
         }
 
-        // Create a new product if none exists with the same ID or name
-        const product = new newProduct(req.body);
+        // Create a new product
+        const productData = {
+            id,
+            name,
+            price, 
+            description,
+            category,
+            image: req.file.path 
+        };
+
+        const product = new newProduct(productData);
         const savedProduct = await product.save();
 
         return res.status(201).json({
@@ -24,6 +33,7 @@ export const postProductData = async (req, res) => {
             data: savedProduct,
         });
     } catch (err) {
+        console.error('Error adding product:', err.message);
         res.status(500).json({ message: err.message });
     }
 };
@@ -41,6 +51,22 @@ export const getProductData = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+export const getProductDataById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const products = await newProduct.find({ _id: id }); 
+        return res.status(200).json({
+            message: "Products retrieved successfully",
+            success: true,
+            data: products,
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 
 export const getProductDataCat = async (req, res) => {
     try {

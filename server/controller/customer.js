@@ -2,17 +2,30 @@ import Customer from "../models/customer.js";
 
 export const addCustomer = async (req, res) => {
   try {
-    const { name, address, city, phone, cart } = req.body;
+    const { name,
+      email,
+      address,
+      country,
+      state_province,
+      zipcode,
+      city,
+      phone,
+      cart,  } = req.body;
 
     // Check for required fields
-    if (!name || !address || !city || !phone) {
+    if (!name || !address || !city || !phone  || !email || !cart || !country || !state_province || !zipcode) {
+
       return res.status(400).json({ error: 'All fields are required' });
     }
 
     // Create a new customer
     const newCustomer = new Customer({
       name,
+      email,
       address,
+      country,
+      state_province,
+      zipcode,
       city,
       phone,
       cart, 
