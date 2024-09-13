@@ -91,6 +91,7 @@ const handleCheckout = async (customerDetails) => {
     const cartId = cart._id;
     // If addCustomer succeeded, dispatch placeOrder
     const placeOrderResult = await dispatch(placeOrder({customerId,trackingNumber,cartId})).unwrap();
+    console.log('Session Id');
 console.log(getCookie('sessionId'))
 Cookies.remove("sessionId", { path: '/' });
 

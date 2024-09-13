@@ -34,7 +34,9 @@ const ProductDetail = () => {
   useEffect(() => {
     if (status === 'Succeeded') {
      
-      setProducts(posts.data);
+      setProducts(posts.data[0]);
+      console.log(posts.data[0]);
+      console.log(product);
     }
   }, [status, posts]);
 
@@ -82,9 +84,9 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
   //  console.log(product);
-    const numericPrice = parseFloat(posts.data&&posts.data['0'].price);
+    const numericPrice = parseFloat(posts.data&&product.price);
    
-    addToCart( posts.data&&posts.data['0']._id , quantity);
+    addToCart( posts.data&&product._id , quantity);
   };
 
   const incrementQuantity = () => {
@@ -116,7 +118,7 @@ const ProductDetail = () => {
       return (
         <div>
           <h2 className="font-prata font-bold mb-3">Description</h2>
-          <p className="text-gray-800">{posts.data&&posts.data['0'].description}</p>
+          <p className="text-gray-800">{posts.data&&product.description}</p>
         </div>
       );
     } else if (activeTab === "additional") {
@@ -124,11 +126,11 @@ const ProductDetail = () => {
         <div>
           <h2 className="font-prata font-bold mb-3">Additional Information</h2>
           <ul className="list-disc pl-5 text-gray-800">
-            <li><strong>Material:</strong> {posts.data&&posts.data['0'].additionalInfo.material}</li>
-            <li><strong>{posts.data&&posts.data['0'].additionalInfo.dimensions ? "Dimensions:" : posts.data&&posts.data['0'].additionalInfo.length ? "Length:" : "Size:"}</strong> {posts.data&&posts.data['0'].additionalInfo.dimensions
-             || posts.data&&posts.data['0'].additionalInfo.length ||posts.data&&posts.data['0'].additionalInfo.size}</li>
-            <li><strong>Weight:</strong> {posts.data&&posts.data['0'].additionalInfo.weight}</li>
-            <li><strong>Origin:</strong> {posts.data&&posts.data['0'].additionalInfo.origin}</li>
+            <li><strong>Material:</strong> {posts.data&&product.additionalInfo.material}</li>
+            <li><strong>{posts.data&&product.additionalInfo.dimensions ? "Dimensions:" : posts.data&&product.additionalInfo.length ? "Length:" : "Size:"}</strong> {posts.data&&product.additionalInfo.dimensions
+             || posts.data&&product.additionalInfo.length ||posts.data&&product.additionalInfo.size}</li>
+            <li><strong>Weight:</strong> {posts.data&&product.additionalInfo.weight}</li>
+            <li><strong>Origin:</strong> {posts.data&&product.additionalInfo.origin}</li>
           </ul>
         </div>
       );
@@ -201,7 +203,7 @@ const ProductDetail = () => {
 //console.log("data",category.name)
   return (
     <div className="px-4 py-10 bg-[#f5ece6]">
-     {/*console.log("data",posts.data&&posts.data['0'].name)} */}
+     {/*console.log("data",posts.data&&product.name)} */}
       <section>
           <div class="container mx-auto mb-8 mt-20">
             <header>
@@ -218,13 +220,18 @@ const ProductDetail = () => {
                   </Link>
                 </span>
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
-                {/* <span>
-                  <Link to="/${product.category}" className="capitalize text-[#595959] font-lato hover:text-[#595959]/[90%] underline">
-                    {posts.data&&posts.data['0'].category}
-                  </Link>
-                </span> */}
+                <span>
+                  {/* {posts.data && posts.data[0].category.name ?
+                   <Link to={`/${posts.data[0].category.name}`} className="capitalize text-[#595959] font-lato hover:text-[#595959]/[90%] underline">
+                   {posts.data && posts.data[0].category.name}
+                 </Link>
+                 :
+                 <></>
+                 } */}
+                 
+                </span>
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
-                <span class="text-[#595959] hover:text-[#595959]/[90%] font-lato">{posts.data&&posts.data['0'].name}</span>
+                <span class="text-[#595959] hover:text-[#595959]/[90%] font-lato">{posts.data&&product.name}</span>
               </div>
             </header>
           </div>        
@@ -235,23 +242,25 @@ const ProductDetail = () => {
             {/* Image and Info Section */}
             <div className="w-full lg:w-1/2 pr-4 mb-5 lg:mb-0">
               <div className="zoom-container">
+             {console.log(posts.image)}
+             {product && product.image ? (
                 <img
-                  src={posts.data&&posts.data['0'].image}
-                  alt={posts.data&&posts.data['0'].name}
+                  src={posts.data&&`http://localhost:5000/${product.image.replace(/\\/g, '/')}`}
+                  alt={posts.data&&product.name}
                   className="zoom-image"
                   onError={(e) => {
                     e.target.onerror = null;
                     e.target.src = "https://via.placeholder.com/300";
                   }}
-                />
+                />):(<div></div>)}
               </div>
             </div>
 
             {/* Product Details Section */}
             <div className="w-full lg:w-1/2">
-              <h1 className="md:text-[38px] text-[#212121] font-prata font-bold mb-5">{posts.data&&posts.data['0'].name}</h1>
-              <p className="text-xl text-gray-600 mb-5">${posts.data&&posts.data['0'].price}</p>
-              <p className="text-gray-800">{posts.data&&posts.data['0'].description}</p>
+              <h1 className="md:text-[38px] text-[#212121] font-prata font-bold mb-5">{posts.data&&product.name}</h1>
+              <p className="text-xl text-gray-600 mb-5">${posts.data&&product.price}</p>
+              <p className="text-gray-800">{posts.data&&product.description}</p>
               <div className="flex items-center gap-4 my-5">
                 <div className="flex items-center ">
                   <div className="flex items-center mb-0 border max-w-[120px] border-gray-300 p-3">

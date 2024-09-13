@@ -128,7 +128,7 @@ const catId = "66d55da88f17d5a5755631dc";
             >
               <Link to={`/product/${item._id}`} className="block">
                   <img
-                    src={item.image}
+                     src={`http://localhost:5000/${item.image.replace(/\\/g, '/')}`}
                     alt={item.name}
                     className="w-full h-64 object-cover"
                   />

@@ -2,10 +2,10 @@ import newProduct from "../models/product.js";
 
 export const postProductData = async (req, res) => {
     try {
-        const { id, name, price, description, category } = req.body;
+        const { name, price, description, category,additionalInfo } = req.body;
 
         // Check if a product with the same ID or name already exists
-        const existingProduct = await newProduct.findOne({ $or: [{ id }, { name }] });
+        const existingProduct = await newProduct.findOne({ name });
 
         if (existingProduct) {
             return res.status(400).json({
@@ -16,12 +16,12 @@ export const postProductData = async (req, res) => {
 
         // Create a new product
         const productData = {
-            id,
+            
             name,
             price, 
             description,
             category,
-            image: req.file.path 
+            additionalInfo
         };
 
         const product = new newProduct(productData);
@@ -56,7 +56,7 @@ export const getProductDataById = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const products = await newProduct.find({ _id: id }); 
+        const products = await newProduct.find({ _id: id }).populate("category"); 
         return res.status(200).json({
             message: "Products retrieved successfully",
             success: true,
@@ -122,7 +122,7 @@ export const updateById= async (req,res) =>
             const productId=req.params.id;
             const isDataUpdated = await newProduct.findByIdAndUpdate(
                 productId, 
-                { name, price, description }, // Fields to update
+                { name, price, description, image: req.file.path  }, // Fields to update
                 { new: true } 
             );
             if(!isDataUpdated){

@@ -11,7 +11,7 @@ import orderMiddleware from '../middleware/orderMiddleware.js';
 
 const routeProduct=express.Router();
 
-routeProduct.post('/postProduct',upload.single("image"),postProductData)  //post for create data
+routeProduct.post('/postProduct',postProductData)  //post for create data
 routeProduct.post('/postCategory',postCategoriesData)  //post for create data
 routeProduct.get("/productsGet", getProductData);   //get Data 
 routeProduct.get("/productsGet/:id", getProductDataById);   //get Data By ID
@@ -19,7 +19,7 @@ routeProduct.get("/productsGetCat/:categoryId", getProductDataCat);   //get Data
 
 routeProduct.delete("/productDelId/:id", deleteProductById);   //delete by id
 
-routeProduct.put("/productUpdate/:id", updateById)
+routeProduct.put("/productUpdate/:id",upload.single("image"), updateById)
 routeProduct.put("/catUpdate/:id", updateCategoryById)
 routeProduct.post('/rating',addRating)
 routeProduct.post('/customer',addCustomer)

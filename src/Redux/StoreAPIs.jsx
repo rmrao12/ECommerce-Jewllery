@@ -61,7 +61,7 @@ export const addCustomer = createAsyncThunk('post/addCustomer', async (customer)
 });
 
 export const placeOrder = createAsyncThunk('post/placeOrder', async (order) => {
-    const response = await axios.post('http://localhost:5000/api/v1/products/order', order);
+    const response = await axios.post('http://localhost:5000/api/v1/products/order', order, { withCredentials: true });
     return response.data;
 });
 

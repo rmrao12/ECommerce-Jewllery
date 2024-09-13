@@ -28,13 +28,13 @@ const RingsPage = () => {
 const catId = "66d55d9f8f17d5a5755631da";
     useEffect(()=>
     {
-        if(status=='idle')
-        {
+      
+       
           if(catId!="")
             dispatch(fetchProductsByCategory(catId));
-        }
+        
 
-    },[catId,status,dispatch]);
+    },[catId,dispatch]);
 
     let content;
     const [totalPages, setTotalPages] = useState(0);
@@ -123,7 +123,7 @@ const catId = "66d55d9f8f17d5a5755631da";
               <div key={item._id} className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <Link to={`/product/${item._id}`} className="block">
                   <img
-                    src={item.image}
+                    src={`http://localhost:5000/${item.image.replace(/\\/g, '/')}`}
                     alt={item.name}
                     className="w-full h-64 object-cover"
                   />

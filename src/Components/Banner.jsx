@@ -38,7 +38,7 @@ const Banner = () => {
         </div>
         {/* Products Section */}
         <div className="flex flex-col md:flex-row gap-8 mt-8">
-        <Link to={`/product/${4}`}>
+        <Link to={`/product/${'66e3e2598ce69630bf543e19'}`}>
           <div className="bg-white p-4 shadow-lg flex items-center">
         
             <img 
@@ -48,7 +48,7 @@ const Banner = () => {
             />
             <div className="text-left">
               <h5 className="text-xl font-semibold mb-2">Bliss Golden Ring</h5>
-              <p className="text-gray-700">$249</p>
+              <p className="text-gray-700">$150</p>
             </div>
            
           </div>
