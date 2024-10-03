@@ -54,7 +54,7 @@ const Banner = () => {
           </div>
           </Link>
 
-          <Link to={`/product/${8}`}>
+          <Link to={`/product/${"66e3e7a38ce69630bf543e59"}`}>
           {/* Product 2 */}
           <div className="bg-white p-4 shadow-lg flex items-center">
             <img 
@@ -64,7 +64,7 @@ const Banner = () => {
             />
             <div className="text-left">
               <h5 className="text-xl font-semibold mb-2">Round Stud Earrings</h5>
-              <p className="text-gray-700">$159</p>
+              <p className="text-gray-700">$150</p>
             </div>
           </div>
           </Link>

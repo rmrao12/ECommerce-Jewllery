@@ -3,7 +3,7 @@ import Product from '../models/product.js';
 
 
 export const addRating = async (req, res) => {
-  const { product, userName, userEmail, rating, review } = req.body;
+  const { product, name, email, rating, review } = req.body;
   const ratings=new Rating(req.body);
   // Validate the product
   const productFind = await Product.findById(product);
@@ -11,7 +11,7 @@ export const addRating = async (req, res) => {
 
   try {
     // Check if the user has already reviewed this product
-    const existingRating = await Rating.findOne({ product: product, userEmail });
+    const existingRating = await Rating.findOne({ product: product, email });
     if (existingRating) {
       return res.status(400).json({ message: 'You have already reviewed this product.' });
     }
@@ -26,7 +26,7 @@ export const addRating = async (req, res) => {
 
 // Get ratings for a product
 export const getRatings = async (req, res) => {
-  const { productId } = req.query;
+  const productId  = req.params.id;
 
   try {
     const ratings = await Rating.find({ product: productId });

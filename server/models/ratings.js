@@ -6,11 +6,11 @@ const ratingSchema = new mongoose.Schema({
     ref: 'Product', // Reference to the Product model
     required: true
   },
-  userName: {
+  name: {
     type: String,
     required: true
   },
-  userEmail: {
+  email: {
     type: String,
     required: true,
     lowercase: true

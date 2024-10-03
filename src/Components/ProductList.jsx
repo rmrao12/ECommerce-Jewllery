@@ -66,7 +66,7 @@ const ProductList = () => {
  // console.log(products.image)
   return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {products.slice(0,8).map((product) => (
             <div
             key={product._id}
             className="relative bg-white product-box rounded overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"

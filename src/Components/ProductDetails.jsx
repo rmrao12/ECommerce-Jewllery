@@ -7,13 +7,24 @@ import '../CssFiles/ProductDetail.css';
 import { useCart } from "../Contexts/CartContext";
 import { useDispatch,useSelector } from 'react-redux';
 
-import { fetchProductById } from '../Redux/StoreAPIs.jsx'
+import { addProductRating, fetchProductById, fetchRatingsById } from '../Redux/StoreAPIs.jsx'
 
 const ProductDetail = () => {
   
   const { id } = useParams();
   const [product, setProducts] = useState([]); 
   const [category, setCategory] = useState(null);
+  const [reviews, setReviews] = useState([]);
+ // const reviews = useSelector((state) => state.reviews.reviews); // Get reviews from state
+  // const reviewStatus = useSelector((state) => state.reviews.reviewStatus);
+  // const reviewError = useSelector((state) => state.reviews.reviewError);
+
+  const [newReview, setNewReview] = React.useState({
+    name: "",
+    email: "",
+    rating: 0,
+    comment: "",
+  });
   const dispatch = useDispatch();
     // Use the correct state access here
     const posts = useSelector((state) => {
@@ -23,7 +34,8 @@ const ProductDetail = () => {
 
     useEffect(()=>
     {       
-      dispatch(fetchProductById(id));       
+      dispatch(fetchProductById(id));   
+    //  dispatch(fetchRatingsById(id));    
 
     },[id,dispatch]);
 
@@ -35,11 +47,13 @@ const ProductDetail = () => {
     if (status === 'Succeeded') {
      
       setProducts(posts.data[0]);
+     
       console.log(posts.data[0]);
       console.log(product);
     }
   }, [status, posts]);
 
+   
   if (status === 'Loading') {
     content = <div>...loading</div>;
   } 
@@ -51,31 +65,40 @@ const ProductDetail = () => {
  
   const { addToCart } = useCart(); // Destructure addToCart from context
   const [activeTab, setActiveTab] = useState("description");
-  const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({
-    name: "",
-    email: "",
-    rating: 0,
-    comment: "",
-  });
+ 
   const [hoverRating, setHoverRating] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
-  useEffect(() => {
-    const storedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    setReviews(storedReviews.filter(review => review.productId === id));
-  }, [id]);
+  // useEffect(() => {
+  //   GetReviews();
+  // }, [id]);
+
+  const GetReviews = async () => {
+    try {
+      console.log("Get Reviews");
+      let result = await dispatch(fetchRatingsById(id));
+      console.log("result");
+      setReviews(result.payload);
+      console.log(result);
+    } catch (err) {
+      console.error("Failed to remove product from cart:", err);
+    }
+  };
+
+  // function GetReviews()
+  // {
+  //   const storedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+  //   setReviews(storedReviews.filter(review => review.productId === id));
+  // }
 
   const handleReviewSubmit = (e) => {
     e.preventDefault();
     const { name, email, rating, comment } = newReview;
+
     if (!name || !email || !rating || !comment) return;
 
-    const newReviews = [...reviews, { ...newReview, productId: id }];
-    setReviews(newReviews);
-    localStorage.setItem("reviews", JSON.stringify(newReviews));
-
-    setNewReview({ name: "", email: "", rating: 0, comment: "" });
+    dispatch(addProductRating({product:id, name, email, rating, review:comment})); // Post the new review
+    setNewReview({ name: "", email: "", rating: 0, comment: "" }); // Clear the form
   };
 
   const handleStarClick = (rating) => {
@@ -98,16 +121,13 @@ const ProductDetail = () => {
   };
 
   const renderStars = (rating) => (
-    <div className="flex mb-4 pt-20">
+    <div className="flex mb-4 pt-3">
       {Array.from({ length: 5 }, (_, i) => (
         <img
           key={i}
           src={i < rating ? starFilled : starEmpty}
           alt="star"
-          className="w-8 h-8 cursor-pointer"
-          onMouseEnter={() => setHoverRating(i + 1)}
-          onMouseLeave={() => setHoverRating(0)}
-          onClick={() => handleStarClick(i + 1)}
+          className="w-8 h-8"        
         />
       ))}
     </div>
@@ -137,66 +157,68 @@ const ProductDetail = () => {
     } else if (activeTab === "reviews") {
       return (
         <div className="flex flex-col md:flex-row">
-          <div className="w-full md:w-1/2 pr-4">
-            <h2 className="font-prata font-bold mb-3">Reviews</h2>
-            {reviews.length > 0 ? (
-              reviews.map((review, index) => (
-                <div key={index} className="mb-4 p-4 border rounded">
-                  <div className="flex items-center mb-2">
-                    {renderStars(review.rating)}
-                    <p className="ml-3 font-semibold">{review.name}</p>
-                  </div>
-                  <p className="text-gray-600">{review.comment}</p>
+        <div className="w-full md:w-1/2 pr-4">
+          <h2 className="font-prata font-bold mb-3">Reviews</h2>
+          {reviews.length > 0 ? (
+            reviews.map((review, index) => (
+              <div key={index} className="mb-4 p-4 border rounded">
+                <div className="items-center mb-2">                 
+                  <p className="ml-1 font-semibold text-2xl">{review.name}</p>
+                  <hr/>
+                  {renderStars(review.rating)}
                 </div>
-              ))
-            ) : (
-              <p>No reviews yet.</p>
-            )}
-          </div>
-          <div className="w-full md:w-1/2 pl-4">
-            <h2 className="font-prata font-bold mb-3">Write a Review</h2>
-            <form onSubmit={handleReviewSubmit} className="flex flex-col space-y-4">
-              <div>
-                <label htmlFor="name" className="block font-semibold mb-1">Name:</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={newReview.name}
-                  onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
-                  className="w-full p-2 border"
-                  required
-                />
+                <p className="text-gray-600 ml-1 text-lg">{review.review}</p>
               </div>
-              <div>
-                <label htmlFor="email" className="block font-semibold mb-1">Email:</label>
-                <input
-                  type="email"
-                  id="email"
-                  value={newReview.email}
-                  onChange={(e) => setNewReview({ ...newReview, email: e.target.value })}
-                  className="w-full p-2 border"
-                  required
-                />
-              </div>
-              <div>
-                <label className="block font-semibold mb-1">Rating:</label>
-                {renderStars(hoverRating || newReview.rating)}
-              </div>
-              <div>
-                <label htmlFor="comment" className="block font-semibold mb-1">Comment:</label>
-                <textarea
-                  id="comment"
-                  value={newReview.comment}
-                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                  className="w-full p-2 border"
-                  rows="4"
-                  required
-                ></textarea>
-              </div>
-              <button type="submit" className="p-4 w-full btn-main text-white">Submit</button>
-            </form>
-          </div>
+            ))
+          ) : (
+            <p>No reviews yet.</p>
+          )}
         </div>
+        <div className="w-full md:w-1/2 pl-4">
+          <h2 className="font-prata font-bold mb-3">Write a Review</h2>
+          <form onSubmit={handleReviewSubmit} className="flex flex-col space-y-4">
+            <div>
+              <label htmlFor="name" className="block font-semibold mb-1">Name:</label>
+              <input
+                type="text"
+                id="name"
+                value={newReview.name}
+                onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                className="w-full p-2 border"
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block font-semibold mb-1">Email:</label>
+              <input
+                type="email"
+                id="email"
+                value={newReview.email}
+                onChange={(e) => setNewReview({ ...newReview, email: e.target.value })}
+                className="w-full p-2 border"
+                required
+              />
+            </div>
+            <div>
+              <label className="block font-semibold mb-1">Rating:</label>
+              {renderStars(hoverRating || newReview.rating)}
+            </div>
+            <div>
+              <label htmlFor="comment" className="block font-semibold mb-1">Comment:</label>
+              <textarea
+                id="comment"
+                value={newReview.comment}
+                onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                className="w-full p-2 border"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+            <button type="submit" className="p-4 w-full btn-main text-white">Submit</button>
+          </form>
+        </div>
+      </div>
+   
       );
     }
   };
@@ -221,13 +243,13 @@ const ProductDetail = () => {
                 </span>
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
                 <span>
-                  {/* {posts.data && posts.data[0].category.name ?
+                  {posts.data && posts.data[0].category.name ?
                    <Link to={`/${posts.data[0].category.name}`} className="capitalize text-[#595959] font-lato hover:text-[#595959]/[90%] underline">
                    {posts.data && posts.data[0].category.name}
                  </Link>
                  :
                  <></>
-                 } */}
+                 }
                  
                 </span>
                 <span className="text-[#595959] hover:text-[#595959]/[90%]">/</span>
@@ -242,7 +264,7 @@ const ProductDetail = () => {
             {/* Image and Info Section */}
             <div className="w-full lg:w-1/2 pr-4 mb-5 lg:mb-0">
               <div className="zoom-container">
-             {console.log(posts.image)}
+          
              {product && product.image ? (
                 <img
                   src={posts.data&&`http://localhost:5000/${product.image.replace(/\\/g, '/')}`}
@@ -300,7 +322,9 @@ const ProductDetail = () => {
               </button>
               <button
                 className={`py-4 md:py-2 px-4 font-semibold text-gray-700 border-b-[1px] md:border-b-[3px] font-lato ${activeTab === "reviews" ? "border-[#375944] border-b-[3px] text-[#375944]" : "md:border-transparent border-[#e7e6e6] hover:text-[#375944]/[90%] hover:border-[#375944]/[90%]"}`}
-                onClick={() => setActiveTab("reviews")}
+                onClick={() => {
+                  GetReviews();
+                  setActiveTab("reviews");}}
               >
                 Reviews
               </button>
