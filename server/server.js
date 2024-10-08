@@ -19,7 +19,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-    origin: 'http://localhost:5173', 
+    origin: "https://golderaura.netlify.app/", 
     credentials: true, // Allow credentials (cookies) to be sent
 }));
 
