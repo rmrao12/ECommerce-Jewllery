@@ -33,7 +33,8 @@ app.use('/api/v1/cart', cartRouter); // Adjusted route path for cart
 connectDb();
 
 const port = process.env.PORT //|| 5000; // Default to 5000 if PORT is not defined
-
+// Favicon handler to prevent 500 error 
+app.get('/favicon.ico', (req, res) => res.status(204));
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
