@@ -16,6 +16,9 @@ app.use('/uploads', express.static('uploads')); // /uploads is a folder
 
 // Middleware setup
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
+app.get('/', (req, res) => {
+    res.send('Hello, World!');
+  })
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cors({
