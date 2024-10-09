@@ -18,10 +18,10 @@ app.use('/uploads', express.static('uploads')); // /uploads is a folder
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors({
-    origin: "https://golderaura.netlify.app/", 
-    credentials: true, // Allow credentials (cookies) to be sent
-}));
+// app.use(cors({
+//     origin: 'http://localhost:5173', 
+//     credentials: true, // Allow credentials (cookies) to be sent
+// }));
 
 app.use(cookieParser()); // Add cookie-parser middleware
  
@@ -32,9 +32,10 @@ app.use('/api/v1/cart', cartRouter); // Adjusted route path for cart
 // Database connection
 connectDb();
 
-// const port = process.env.PORT //|| 5000; // Default to 5000 if PORT is not defined
+const port = process.env.PORT //|| 5000; // Default to 5000 if PORT is not defined
 
-// app.listen(port, () => {
-//     console.log(`Server is running on port ${port}`);
-// });
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
 export default app;

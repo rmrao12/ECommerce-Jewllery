@@ -127,7 +127,24 @@ const ProductDetail = () => {
           key={i}
           src={i < rating ? starFilled : starEmpty}
           alt="star"
-          className="w-8 h-8"        
+          className="w-8 h-8"     
+          onMouseEnter={() => setHoverRating(i + 1)}
+          onMouseLeave={() => setHoverRating(0)}
+          onClick={() => handleStarClick(i + 1)}   
+        />
+      ))}
+    </div>
+  );
+
+  const renderStars1 = (rating) => (
+    <div className="flex mb-4 pt-3">
+      {Array.from({ length: 5 }, (_, i) => (
+        <img
+          key={i}
+          src={i < rating ? starFilled : starEmpty}
+          alt="star"
+          className="w-8 h-8"     
+          
         />
       ))}
     </div>
@@ -165,7 +182,7 @@ const ProductDetail = () => {
                 <div className="items-center mb-2">                 
                   <p className="ml-1 font-semibold text-2xl">{review.name}</p>
                   <hr/>
-                  {renderStars(review.rating)}
+                  {renderStars1(review.rating)}
                 </div>
                 <p className="text-gray-600 ml-1 text-lg">{review.review}</p>
               </div>
