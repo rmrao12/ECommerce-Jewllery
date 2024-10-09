@@ -130,7 +130,7 @@ const CartPage = () => {
                             </span>
                             <div className="flex items-center">
                               <img
-                                src={item.product.data&&`http://localhost:5000/${item.product.image.replace(/\\/g, '/')}`}
+                                src={item.product.data&&`https://jewllerystorebackend.vercel.app/${item.product.image.replace(/\\/g, '/')}`}
                                 alt={item.product.name}
                                 className="w-[55px] h-[55px] object-cover rounded-lg mr-6"
                               />

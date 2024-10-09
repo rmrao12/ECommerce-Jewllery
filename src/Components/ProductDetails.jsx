@@ -284,7 +284,7 @@ const ProductDetail = () => {
           
              {product && product.image ? (
                 <img
-                  src={posts.data&&`http://localhost:5000/${product.image.replace(/\\/g, '/')}`}
+                  src={posts.data&&`https://jewllerystorebackend.vercel.app/${product.image.replace(/\\/g, '/')}`}
                   alt={posts.data&&product.name}
                   className="zoom-image"
                   onError={(e) => {

@@ -120,7 +120,7 @@ const ShopPage = () => {
           >
               <Link to={`/product/${product._id}`} className="block">
                 <img
-                  src={`http://localhost:5000/${product.image.replace(/\\/g, '/')}`}
+                  src={`https://jewllerystorebackend.vercel.app/${product.image.replace(/\\/g, '/')}`}
                   alt={product.name}
                   className="w-full h-64 object-cover"
                 />

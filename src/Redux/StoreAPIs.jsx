@@ -15,63 +15,63 @@ const initialState = {
 
 // GET Thunks
 export const fetchProducts = createAsyncThunk('get/products', async () => {
-    const response = await axios.get('http://localhost:5000/api/v1/products/productsGet');
+    const response = await axios.get('https://jewllerystorebackend.vercel.app/api/v1/products/productsGet');
     return response.data;
 });
 
 export const fetchProductById = createAsyncThunk('get/productById', async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/v1/products/productsGet/${id}`);
+    const response = await axios.get(`https://jewllerystorebackend.vercel.app/api/v1/products/productsGet/${id}`);
     return response.data;
 });
 
 export const fetchCartTotals = createAsyncThunk('get/cartTotals', async () => {
-    const response = await axios.get('http://localhost:5000/api/v1/cart/totals');
+    const response = await axios.get('https://jewllerystorebackend.vercel.app/api/v1/cart/totals');
     return response.data;
 });
 
 export const fetchOrderById = createAsyncThunk('get/orderById', async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/v1/products/getorder/${id}`);
+    const response = await axios.get(`https://jewllerystorebackend.vercel.app/api/v1/products/getorder/${id}`);
     return response.data;
 });
 
 export const fetchProductsByCategory = createAsyncThunk('get/productsGetCat', async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/v1/products/productsGetCat/${id}`);
+    const response = await axios.get(`https://jewllerystorebackend.vercel.app/api/v1/products/productsGetCat/${id}`);
     return response.data;
 });
 
 export const fetchCart = createAsyncThunk('get/cart', async () => {
-    const response = await axios.get('http://localhost:5000/api/v1/cart/getCart', { withCredentials: true });
+    const response = await axios.get('https://jewllerystorebackend.vercel.app/api/v1/cart/getCart', { withCredentials: true });
     return response.data;
 });
 
 // POST Thunks
 export const addToCart = createAsyncThunk('post/addToCart', async (item) => {
     
-    const response = await axios.post('http://localhost:5000/api/v1/cart/add', item, { withCredentials: true });
+    const response = await axios.post('https://jewllerystorebackend.vercel.app/api/v1/cart/add', item, { withCredentials: true });
     return response.data;
 });
 
 export const addProductRating = createAsyncThunk('post/addProductRating', async (rating) => {
-    const response = await axios.post('http://localhost:5000/api/v1/products/rating', rating);
+    const response = await axios.post('https://jewllerystorebackend.vercel.app/api/v1/products/rating', rating);
     return response.data;
 });
 export const fetchRatingsById = createAsyncThunk('get/getRating', async (id) => {
-    const response = await axios.get(`http://localhost:5000/api/v1/products/getRating/${id}`);
+    const response = await axios.get(`https://jewllerystorebackend.vercel.app/api/v1/products/getRating/${id}`);
     return response.data;
 });
 export const addCustomer = createAsyncThunk('post/addCustomer', async (customer) => {
-    const response = await axios.post('http://localhost:5000/api/v1/products/customer', customer);
+    const response = await axios.post('https://jewllerystorebackend.vercel.app/api/v1/products/customer', customer);
     return response.data;
 });
 
 export const placeOrder = createAsyncThunk('post/placeOrder', async (order) => {
-    const response = await axios.post('http://localhost:5000/api/v1/products/order', order, { withCredentials: true });
+    const response = await axios.post('https://jewllerystorebackend.vercel.app/api/v1/products/order', order, { withCredentials: true });
     return response.data;
 });
 
 // DELETE Thunk
 export const removeFromCart = createAsyncThunk('delete/removeFromCart', async (id) => {
-    const response = await axios.delete(`http://localhost:5000/api/v1/cart/remove/${id}`, { withCredentials: true });
+    const response = await axios.delete(`https://jewllerystorebackend.vercel.app/api/v1/cart/remove/${id}`, { withCredentials: true });
     return response.data;
 });
 

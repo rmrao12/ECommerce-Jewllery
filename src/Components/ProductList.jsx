@@ -74,7 +74,7 @@ const ProductList = () => {
               <Link to={`/product/${product._id}`} className="block">
               {console.log(product.image.slice(8))}
                 <img
-                  src={`http://localhost:5000/${product.image.replace(/\\/g, '/')}`}
+                  src={`https://jewllerystorebackend.vercel.app/${product.image.replace(/\\/g, '/')}`}
                   alt={product.name}
                   className="w-full h-64 object-cover"
                 />
